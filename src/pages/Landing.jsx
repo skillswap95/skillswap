@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Zap, ArrowRight, Users, Brain, MessageCircle, TrendingUp, Star, ChevronRight, Code, Palette, Music, Camera, Globe, BookOpen } from 'lucide-react';
+import { Zap, ArrowRight, Users, Brain, MessageCircle, TrendingUp, ChevronRight, Code, Palette, Music, Camera, Globe, BookOpen } from 'lucide-react';
 
 const FLOATING_SKILLS = [
   { label: 'React', color: '#38BDF8', x: 8, y: 15, delay: 0 },
@@ -48,12 +48,6 @@ const HOW_STEPS = [
   { num: '01', title: 'Create your profile', desc: 'List the skills you can teach and the ones you want to learn.' },
   { num: '02', title: 'Get matched', desc: 'Our system finds users who have what you want and want what you have.' },
   { num: '03', title: 'Start swapping', desc: 'Chat, schedule sessions, and grow together — zero cost, pure value.' },
-];
-
-const TESTIMONIALS = [
-  { name: 'Sofia R.', skill: 'Taught: Italian · Learned: Web Dev', text: 'I swapped Italian lessons for React tutorials. Within 2 months I landed my first freelance project. This platform is magic.', rating: 5, avatar: 'Sofia' },
-  { name: 'Marcus T.', skill: 'Taught: Guitar · Learned: Graphic Design', text: 'The matching was spot on. Found someone within an hour who needed guitar lessons and knew Figma inside out.', rating: 5, avatar: 'Marcus' },
-  { name: 'Priya K.', skill: 'Taught: Python · Learned: Photography', text: 'As a developer I never thought I could afford photography lessons. SkillSwap changed that completely.', rating: 5, avatar: 'Priya' },
 ];
 
 const SKILL_CATEGORIES = [
@@ -168,9 +162,9 @@ export default function Landing() {
           <div className="flex flex-wrap justify-center gap-8 mt-16 pt-8"
             style={{ borderTop: '1px solid var(--border)' }}>
             {[
-              { num: '12,400+', label: 'Active Learners' },
-              { num: '340+', label: 'Skills Available' },
-              { num: '98%', label: 'Match Rate' },
+              { num: '40+', label: 'Skills Available' },
+              { num: '100%', label: 'Free — No Credit Card' },
+              { num: '2-Way', label: 'Skill Matching' },
               { num: '0 €', label: 'Always Free' },
             ].map(({ num, label }) => (
               <div key={label} className="text-center">
@@ -269,32 +263,29 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
+      {/* EARLY ADOPTER SECTION */}
       <section className="py-24 px-6" style={{ background: 'rgba(255,255,255,0.01)' }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-5xl font-black mb-4" style={{ fontFamily: 'Bricolage Grotesque' }}>
-              Real people, <span className="gradient-text">real growth</span>
-            </h2>
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium mb-6"
+            style={{ background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.25)', color: '#FBBF24', fontFamily: 'Lexend' }}>
+            🚀 Now Launching — Be Among the First
           </div>
+          <h2 className="text-5xl font-black mb-6" style={{ fontFamily: 'Bricolage Grotesque' }}>
+            Be a <span className="gradient-text-amber">founding member</span>
+          </h2>
+          <p className="text-xl mb-12" style={{ color: 'var(--text-secondary)' }}>
+            SkillSwap AI is just launching. Join now as one of our first members and help shape the future of skill exchange.
+          </p>
           <div className="grid md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map(({ name, skill, text, rating, avatar }) => (
-              <div key={name} className="p-6 rounded-2xl" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-                <div className="flex mb-4">
-                  {[...Array(rating)].map((_, i) => (
-                    <Star key={i} size={14} color="#FBBF24" fill="#FBBF24" />
-                  ))}
-                </div>
-                <p className="text-sm mb-6 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>"{text}"</p>
-                <div className="flex items-center gap-3">
-                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${avatar}`}
-                    alt={name} className="w-10 h-10 rounded-full"
-                    style={{ border: '2px solid var(--border)', background: '#151F30' }} />
-                  <div>
-                    <p className="font-semibold text-sm" style={{ fontFamily: 'Bricolage Grotesque' }}>{name}</p>
-                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>{skill}</p>
-                  </div>
-                </div>
+            {[
+              { emoji: '🎯', title: 'Shape the Platform', desc: 'Your feedback directly influences what we build next. Early members have a real voice.' },
+              { emoji: '🤝', title: 'Grow Together', desc: 'Connect with motivated early adopters who are serious about learning and teaching.' },
+              { emoji: '🆓', title: 'Always Free', desc: 'Core skill swapping is free forever. No hidden fees, no subscriptions, no limits.' },
+            ].map(({ emoji, title, desc }) => (
+              <div key={title} className="p-6 rounded-2xl text-left" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+                <div className="text-3xl mb-4">{emoji}</div>
+                <h3 className="font-bold mb-2" style={{ fontFamily: 'Bricolage Grotesque' }}>{title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{desc}</p>
               </div>
             ))}
           </div>
