@@ -51,12 +51,12 @@ const HOW_STEPS = [
 ];
 
 const SKILL_CATEGORIES = [
-  { icon: Code, label: 'Technology', count: '2.4k learners' },
-  { icon: Palette, label: 'Design', count: '1.8k learners' },
-  { icon: Music, label: 'Music', count: '3.1k learners' },
-  { icon: Camera, label: 'Photography', count: '980 learners' },
-  { icon: Globe, label: 'Languages', count: '4.2k learners' },
-  { icon: BookOpen, label: 'Academics', count: '1.5k learners' },
+  { icon: Code, label: 'Technology', count: 'Web, Mobile, Data & more' },
+  { icon: Palette, label: 'Design', count: 'UI/UX, Graphics, 3D & more' },
+  { icon: Music, label: 'Music', count: 'Guitar, Piano, Production & more' },
+  { icon: Camera, label: 'Photography', count: 'Photo, Video, Editing & more' },
+  { icon: Globe, label: 'Languages', count: 'Spanish, French, Japanese & more' },
+  { icon: BookOpen, label: 'Academics', count: 'Math, Science, Writing & more' },
 ];
 
 export default function Landing() {
@@ -245,7 +245,7 @@ export default function Landing() {
             <h2 className="text-5xl font-black mb-4" style={{ fontFamily: 'Bricolage Grotesque' }}>
               Explore <span className="gradient-text-amber">categories</span>
             </h2>
-            <p style={{ color: 'var(--text-secondary)' }}>Hundreds of skills waiting to be exchanged</p>
+            <p style={{ color: 'var(--text-secondary)' }}>Browse skill categories available for exchange</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {SKILL_CATEGORIES.map(({ icon: Icon, label, count }) => (
