@@ -51,8 +51,7 @@ export default function Signup() {
   async function handleSubmit() {
     if (!name || !email || !password) return toast.error('Please fill all fields');
     if (password.length < 6) return toast.error('Password must be at least 6 characters');
-    if (skillsOffered.length === 0) return toast.error('Add at least one skill you can teach');
-    if (skillsWanted.length === 0) return toast.error('Add at least one skill you want to learn');
+    // skills are optional - users can add them later in profile
     setLoading(true);
     try {
       await signup(email, password, name);
@@ -185,7 +184,7 @@ export default function Signup() {
             <div className="space-y-5">
               <div>
                 <h2 className="text-2xl font-black mb-1" style={{ fontFamily: 'Bricolage Grotesque' }}>What can you teach?</h2>
-                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Select up to 6 skills you can offer others.</p>
+                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Select skills you can offer others. <span style={{ color: 'var(--sky)' }}>Optional</span> — you can add more later.</p>
               </div>
 
               <input className="input-dark" placeholder="Search skills..." value={searchOffered} onChange={e => setSearchOffered(e.target.value)} />
@@ -221,10 +220,7 @@ export default function Signup() {
                 <button onClick={() => setStep(1)} className="btn-secondary flex items-center gap-2 py-3 px-5">
                   <ArrowLeft size={15} /> Back
                 </button>
-                <button onClick={() => {
-                  if (skillsOffered.length === 0) return toast.error('Add at least one skill');
-                  setStep(3);
-                }} className="btn-primary flex-1 justify-center py-3">
+                <button onClick={() => setStep(3)} className="btn-primary flex-1 justify-center py-3">
                   Continue <ArrowRight size={16} />
                 </button>
               </div>
@@ -236,7 +232,7 @@ export default function Signup() {
             <div className="space-y-5">
               <div>
                 <h2 className="text-2xl font-black mb-1" style={{ fontFamily: 'Bricolage Grotesque' }}>What do you want to learn?</h2>
-                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Select up to 6 skills you want to acquire.</p>
+                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Select skills you want to acquire. <span style={{ color: 'var(--sky)' }}>Optional</span> — you can update anytime.</p>
               </div>
 
               <input className="input-dark" placeholder="Search skills..." value={searchWanted} onChange={e => setSearchWanted(e.target.value)} />
