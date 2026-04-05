@@ -8,7 +8,7 @@ export function useTheme() {
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('skillswap-theme') || 'dark';
+    return localStorage.getItem('skillswap-theme') || 'light';
   });
 
   useEffect(() => {
