@@ -156,6 +156,10 @@ export default function Chat() {
       return;
     }
 
+    if (!storage) {
+      toast.error('File sharing is not configured yet');
+      return;
+    }
     setUploading(true);
     const chatId = [currentUser.uid, activeChat.uid].sort().join('_');
     const path = `chats/${chatId}/${Date.now()}_${file.name}`;
@@ -193,16 +197,17 @@ export default function Chat() {
     (u.skillsOffered || []).some(s => s.toLowerCase().includes(search.toLowerCase()))
   );
 
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-
   return (
     <AppLayout>
-      <div className="flex" style={{ height: 'calc(100vh - 57px)' }}>
-        {/* Conversation list */}
+      {/*
+        Mobile: subtract header (57px) + bottom nav (64px) = 121px
+        Desktop (md+): full 100vh, no fixed header or bottom nav padding
+      */}
+      <div className="flex h-[calc(100vh-121px)] md:h-screen">
+        {/* Conversation list — hidden on mobile when a chat is open */}
         <div
           className={`${
-            // On mobile, show sidebar OR chat panel, not both
-            isMobile && activeChat && !showSidebar ? 'hidden' : 'flex'
+            activeChat && !showSidebar ? 'hidden md:flex' : 'flex'
           } w-full md:w-72 flex-col shrink-0`}
           style={{
             borderRight: '1px solid var(--border)',
@@ -256,10 +261,10 @@ export default function Chat() {
           </div>
         </div>
 
-        {/* Chat area */}
+        {/* Chat area — hidden on mobile until a chat is selected */}
         <div
           className={`${
-            isMobile && showSidebar ? 'hidden' : 'flex'
+            showSidebar && !activeChat ? 'hidden md:flex' : 'flex'
           } flex-1 flex-col`}
           style={{ minWidth: 0 }}
         >

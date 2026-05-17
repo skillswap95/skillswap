@@ -19,5 +19,6 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const rtdb = getDatabase(app);
-export const storage = getStorage(app);
+export let storage = null;
+try { storage = getStorage(app); } catch { /* Storage not configured */ }
 export default app;
