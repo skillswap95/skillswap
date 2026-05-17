@@ -113,15 +113,23 @@ export default function Chat() {
 
   useEffect(() => {
     if (!activeChat) return;
-    const chatId = [currentUser.uid, activeChat.uid].sort().join('_');
+    const otherId = activeChat.uid || activeChat.id;
+    const chatId = [currentUser.uid, otherId].sort().join('_');
     const msgRef = ref(rtdb, `chats/${chatId}/messages`);
-    const unsub = onValue(msgRef, snap => {
-      const data = snap.val();
-      if (!data) { setMessages([]); return; }
-      const list = Object.values(data).sort((a, b) => a.timestamp - b.timestamp);
-      setMessages(list);
-      setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
-    });
+    const unsub = onValue(
+      msgRef,
+      snap => {
+        const data = snap.val();
+        if (!data) { setMessages([]); return; }
+        const list = Object.values(data).sort((a, b) => a.timestamp - b.timestamp);
+        setMessages(list);
+        setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), 50);
+      },
+      err => {
+        console.error('RTDB read error:', err);
+        toast.error(`Chat error: ${err.code || err.message}`);
+      }
+    );
     return () => unsub();
   }, [activeChat]);
 
@@ -129,7 +137,8 @@ export default function Chat() {
     e.preventDefault();
     if (!newMsg.trim() || !activeChat || sending) return;
     setSending(true);
-    const chatId = [currentUser.uid, activeChat.uid].sort().join('_');
+    const otherId = activeChat.uid || activeChat.id;
+    const chatId = [currentUser.uid, otherId].sort().join('_');
     try {
       await push(ref(rtdb, `chats/${chatId}/messages`), {
         text: newMsg.trim(),
@@ -140,8 +149,12 @@ export default function Chat() {
       });
       setNewMsg('');
       inputRef.current?.focus();
-    } catch {
-      toast.error('Failed to send message');
+    } catch (err) {
+      console.error('Send message error:', err);
+      toast.error(err.code === 'PERMISSION_DENIED'
+        ? 'Permission denied — check Firebase RTDB rules'
+        : `Failed to send: ${err.message || err.code}`
+      );
     }
     setSending(false);
   }
@@ -157,11 +170,12 @@ export default function Chat() {
     }
 
     if (!storage) {
-      toast.error('File sharing is not configured yet');
+      toast.error('Storage not configured — add VITE_FIREBASE_STORAGE_BUCKET to Vercel env vars');
       return;
     }
     setUploading(true);
-    const chatId = [currentUser.uid, activeChat.uid].sort().join('_');
+    const otherId = activeChat.uid || activeChat.id;
+    const chatId = [currentUser.uid, otherId].sort().join('_');
     const path = `chats/${chatId}/${Date.now()}_${file.name}`;
 
     try {
@@ -181,7 +195,8 @@ export default function Chat() {
       });
       toast.success('File sent!');
     } catch (err) {
-      toast.error('Failed to upload file');
+      console.error('File upload error:', err);
+      toast.error(`Upload failed: ${err.message || err.code}`);
     }
     setUploading(false);
     e.target.value = '';
