@@ -101,12 +101,17 @@ export default function Chat() {
 
   useEffect(() => {
     async function fetchUsers() {
-      const snap = await getDocs(collection(db, 'users'));
-      const list = snap.docs
-        .map(d => ({ id: d.id, ...d.data() }))
-        .filter(u => u.uid !== currentUser.uid);
-      setUsers(list);
-      if (list.length > 0 && window.innerWidth >= 768) setActiveChat(list[0]);
+      try {
+        const snap = await getDocs(collection(db, 'users'));
+        const list = snap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .filter(u => u.uid !== currentUser.uid);
+        setUsers(list);
+        if (list.length > 0 && window.innerWidth >= 768) setActiveChat(list[0]);
+      } catch (err) {
+        console.error('Failed to load users:', err);
+        toast.error('Could not load conversations. Please refresh.');
+      }
     }
     fetchUsers();
   }, []);
@@ -127,7 +132,7 @@ export default function Chat() {
       },
       err => {
         console.error('RTDB read error:', err);
-        toast.error(`Chat error: ${err.code || err.message}`);
+        // don't spam toasts on transient connection errors
       }
     );
     return () => unsub();

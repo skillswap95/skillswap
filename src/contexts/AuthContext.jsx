@@ -57,16 +57,24 @@ export function AuthProvider({ children }) {
 
   async function refreshProfile() {
     if (!currentUser) return;
-    const snap = await getDoc(doc(db, 'users', currentUser.uid));
-    if (snap.exists()) setUserProfile(snap.data());
+    try {
+      const snap = await getDoc(doc(db, 'users', currentUser.uid));
+      if (snap.exists()) setUserProfile(snap.data());
+    } catch (err) {
+      console.error('Failed to refresh profile:', err);
+    }
   }
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       if (user) {
-        const snap = await getDoc(doc(db, 'users', user.uid));
-        if (snap.exists()) setUserProfile(snap.data());
+        try {
+          const snap = await getDoc(doc(db, 'users', user.uid));
+          if (snap.exists()) setUserProfile(snap.data());
+        } catch (err) {
+          console.error('Failed to load user profile:', err);
+        }
       }
       setLoading(false);
     });
