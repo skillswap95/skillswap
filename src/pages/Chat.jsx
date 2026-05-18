@@ -168,24 +168,30 @@ export default function Chat() {
     const file = e.target.files?.[0];
     if (!file || !activeChat) return;
 
-    const maxSize = 20 * 1024 * 1024; // 20MB
+    const maxSize = 20 * 1024 * 1024;
     if (file.size > maxSize) {
       toast.error('File too large. Max 20MB.');
       return;
     }
 
-    if (!storage) {
-      toast.error('Storage not configured — add VITE_FIREBASE_STORAGE_BUCKET to Vercel env vars');
+    if (!storage || !import.meta.env.VITE_FIREBASE_STORAGE_BUCKET) {
+      toast.error('File uploads not configured. Add VITE_FIREBASE_STORAGE_BUCKET in Vercel environment variables.');
+      e.target.value = '';
       return;
     }
+
     setUploading(true);
     const otherId = activeChat.uid || activeChat.id;
     const chatId = [currentUser.uid, otherId].sort().join('_');
     const path = `chats/${chatId}/${Date.now()}_${file.name}`;
 
+    const timeout = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Upload timed out. Check Firebase Storage is enabled and VITE_FIREBASE_STORAGE_BUCKET is set in Vercel.')), 20000)
+    );
+
     try {
       const sRef = storageRef(storage, path);
-      await uploadBytes(sRef, file);
+      await Promise.race([uploadBytes(sRef, file), timeout]);
       const downloadUrl = await getDownloadURL(sRef);
 
       await push(ref(rtdb, `chats/${chatId}/messages`), {
@@ -201,7 +207,10 @@ export default function Chat() {
       toast.success('File sent!');
     } catch (err) {
       console.error('File upload error:', err);
-      toast.error(`Upload failed: ${err.message || err.code}`);
+      toast.error(err.message?.includes('timed out')
+        ? err.message
+        : `Upload failed: ${err.message || err.code}`
+      );
     }
     setUploading(false);
     e.target.value = '';
